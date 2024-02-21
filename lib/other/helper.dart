@@ -1,7 +1,9 @@
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:file_picker/file_picker.dart';
+import 'package:help_rookie_ui/other/return_state.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart' as ui;
 
 class WebHelper {
   //加解密
@@ -10,6 +12,7 @@ class WebHelper {
   static final securityIV = encrypt.IV.fromUtf8(secretKey);
   static final encrypter = encrypt.Encrypter(encrypt.AES(securityKey));
 
+  //加解密的字符串不能为空
   static String encryptFunc(String plainText) {
     return encrypter.encrypt(plainText, iv: securityIV).base64;
   }
@@ -37,5 +40,25 @@ class WebHelper {
       withData: true,
     );
     return result;
+  }
+
+  static bool isEmailValid(String email) {
+    // 正则表达式模式用于匹配合法的邮箱地址格式
+    const pattern = r'^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$';
+    final regex = RegExp(pattern);
+    return regex.hasMatch(email);
+  }
+
+  static ui.InfoBarSeverity parseStatus(ReturnState returnState) {
+    switch (returnState.code) {
+      case 0:
+        return ui.InfoBarSeverity.success;
+      case 1:
+        return ui.InfoBarSeverity.warning;
+      case 2:
+        return ui.InfoBarSeverity.error;
+      default:
+        return ui.InfoBarSeverity.info;
+    }
   }
 }
