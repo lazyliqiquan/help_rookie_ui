@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:help_rookie_ui/config/theme.dart';
 import 'package:help_rookie_ui/data/config/local_store.dart';
 import 'package:help_rookie_ui/data/config/network.dart';
+import 'package:help_rookie_ui/data/user/config.dart';
 import 'package:help_rookie_ui/data/user/login.dart';
 import 'package:help_rookie_ui/pages/go_router.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -21,6 +22,7 @@ void main() {
     providers: [
       ChangeNotifierProvider(create: (_) => AppTheme()),
       ChangeNotifierProvider(create: (_) => LoginModel()),
+      ChangeNotifierProvider(create: (_) => WebConfigModel()),
     ],
     child: const MyApp(),
   ));
