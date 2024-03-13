@@ -1,12 +1,11 @@
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:go_router/go_router.dart';
-import 'package:help_rookie_ui/data/user/login.dart';
 import 'package:help_rookie_ui/pages/edit/editor_screen.dart';
 import 'package:help_rookie_ui/pages/home/home.dart';
 import 'package:help_rookie_ui/pages/home/home_page.dart';
 import 'package:help_rookie_ui/pages/login/find_password.dart';
 import 'package:help_rookie_ui/pages/login/login.dart';
 import 'package:help_rookie_ui/pages/login/register.dart';
-import 'package:provider/provider.dart';
 
 class MyRouter {
   GoRouter get goRouter => _router;
@@ -39,35 +38,39 @@ class MyRouter {
               name: 'find-password',
               builder: (context, state) => const FindPassword()),
           GoRoute(
-              path: 'edit',
-              name: 'edit',
-              redirect: (context, state) {
-                //不管url是什么，都直接跳转到主页面的，而不是子路由
-                return '/';
-              },
-              routes: [
-                GoRoute(
-                    path: 'seek-help',
-                    name: 'seek-help',
-                    builder: (context, state) =>
-                        const EditorScreen(editStatus: 0, routeArgs: []),
-                    routes: [
-                      GoRoute(
-                          path: ':seek-help-id',
-                          builder: (context, state) =>
-                              const EditorScreen(editStatus: 1, routeArgs: []))
-                    ]),
-                GoRoute(
-                    path: ':seek-help-id/lend-hand',
-                    builder: (context, state) =>
-                        const EditorScreen(editStatus: 2, routeArgs: []),
-                    routes: [
-                      GoRoute(
-                          path: ':lend-hand-id',
-                          builder: (context, state) =>
-                              const EditorScreen(editStatus: 3, routeArgs: []))
-                    ]),
-              ]),
+            path: 'edit',
+            name: 'edit',
+            builder: (context, state) {
+              return EditorScreen(document: Document());
+            },
+            // redirect: (context, state) {
+            //   //不管url是什么，都直接跳转到主页面的，而不是子路由
+            //   return '/edit/seek-help';
+            // },
+            // routes: [
+            //   GoRoute(
+            //       path: 'seek-help',
+            //       name: 'seek-help',
+            //       builder: (context, state) =>
+            //           const EditorScreen(editStatus: 0, routeArgs: []),
+            //       routes: [
+            //         GoRoute(
+            //             path: ':seek-help-id',
+            //             builder: (context, state) =>
+            //                 const EditorScreen(editStatus: 1, routeArgs: []))
+            //       ]),
+            //   GoRoute(
+            //       path: ':seek-help-id/lend-hand',
+            //       builder: (context, state) =>
+            //           const EditorScreen(editStatus: 2, routeArgs: []),
+            //       routes: [
+            //         GoRoute(
+            //             path: ':lend-hand-id',
+            //             builder: (context, state) =>
+            //                 const EditorScreen(editStatus: 3, routeArgs: []))
+            //       ]),
+            // ]
+          ),
         ])
   ]);
 }

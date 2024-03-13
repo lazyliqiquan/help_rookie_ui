@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:help_rookie_ui/pages/home/home_page.dart';
 import 'package:help_rookie_ui/pages/other/screen_limit.dart';
 import 'package:help_rookie_ui/pages/other/top_navigation_bar.dart';
 
@@ -19,11 +20,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return ScreenLimit(
-        child: Column(
-      children: [const TopNavigationBar(), Expanded(child: widget.child)],
-    ));
+      child: const HomePage(),
+    );
   }
 }
-
-
-

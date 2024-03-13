@@ -44,54 +44,53 @@ class _FindPasswordState extends State<FindPassword> {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenLimit(
-      child: LoginBackground(
-        child: Column(
-          children: [
-            const LoginTopBar(isRegister: false),
-            const SizedBox(height: 20),
-            for (int i = 0; i < 7; i++)
-              if (i % 2 == 1)
-                const SizedBox(height: 10)
-              else
-                Row(
-                  children: [
-                    if (i > 5)
-                      SendCode(getEmail: <String>() {
-                        return textEditingControllers[2].text;
-                      }),
-                    if (i > 5) const SizedBox(width: 10),
-                    Expanded(
-                        child: TextBox(
-                      controller: textEditingControllers[i ~/ 2],
-                      placeholder: _strList[i ~/ 2],
-                    ))
-                  ],
-                ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () async {
-                  ReturnState returnState =
-                      await context.read<LoginModel>().findPassword(
-                            textEditingControllers[2].text,
-                            textEditingControllers[3].text,
-                            textEditingControllers[0].text,
-                            textEditingControllers[1].text,
-                          );
-                  if (context.mounted) {
-                    await MyInfoBar.showInfo(context, returnState);
-                  }
-                  if (context.mounted && returnState.code == 0) {
-                    context.goNamed('login');
-                  }
-                }.throttle(),
-                child: const Text('Find password'),
+    return LoginBackground(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const LoginTopBar(isRegister: false),
+          const SizedBox(height: 20),
+          for (int i = 0; i < 7; i++)
+            if (i % 2 == 1)
+              const SizedBox(height: 10)
+            else
+              Row(
+                children: [
+                  if (i > 5)
+                    SendCode(getEmail: <String>() {
+                      return textEditingControllers[2].text;
+                    }),
+                  if (i > 5) const SizedBox(width: 10),
+                  Expanded(
+                      child: TextBox(
+                    controller: textEditingControllers[i ~/ 2],
+                    placeholder: _strList[i ~/ 2],
+                  ))
+                ],
               ),
-            )
-          ],
-        ),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () async {
+                ReturnState returnState =
+                    await context.read<LoginModel>().findPassword(
+                          textEditingControllers[2].text,
+                          textEditingControllers[3].text,
+                          textEditingControllers[0].text,
+                          textEditingControllers[1].text,
+                        );
+                if (context.mounted) {
+                  await MyInfoBar.showInfo(context, returnState);
+                }
+                if (context.mounted && returnState.code == 0) {
+                  context.goNamed('login');
+                }
+              }.throttle(),
+              child: const Text('Find password'),
+            ),
+          )
+        ],
       ),
     );
   }

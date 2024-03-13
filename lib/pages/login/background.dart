@@ -10,6 +10,8 @@ class LoginBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     return ScreenLimit(
+      isCustom: false,
+      showTopNavigationBar: false,
       child: Container(
         decoration: const BoxDecoration(
             gradient: LinearGradient(colors: [Colors.white, Colors.grey])),

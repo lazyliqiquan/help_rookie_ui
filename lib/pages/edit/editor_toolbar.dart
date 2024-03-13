@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 
-class EditorToolbar extends StatefulWidget {
-  const EditorToolbar(
+class MyQuillToolbar extends StatefulWidget {
+  const MyQuillToolbar(
       {Key? key, required this.controller, required this.focusNode})
       : super(key: key);
   final QuillController controller;
   final FocusNode focusNode;
 
   @override
-  State<EditorToolbar> createState() => _EditorToolbarState();
+  State<MyQuillToolbar> createState() => _MyQuillToolbarState();
 }
 
-class _EditorToolbarState extends State<EditorToolbar> {
+class _MyQuillToolbarState extends State<MyQuillToolbar> {
   @override
   Widget build(BuildContext context) {
     return QuillToolbar(
@@ -29,8 +29,7 @@ class _EditorToolbarState extends State<EditorToolbar> {
               isUndo: false,
               controller: widget.controller,
             ),
-            QuillToolbarFontSizeButton(controller: widget.controller),
-            QuillToolbarSelectHeaderStyleDropdownButton(
+            QuillToolbarClearFormatButton(
               controller: widget.controller,
             ),
             QuillToolbarToggleStyleButton(
@@ -46,9 +45,6 @@ class _EditorToolbarState extends State<EditorToolbar> {
             QuillToolbarToggleStyleButton(
               controller: widget.controller,
               attribute: Attribute.underline,
-            ),
-            QuillToolbarClearFormatButton(
-              controller: widget.controller,
             ),
             QuillToolbarColorButton(
               controller: widget.controller,
@@ -77,10 +73,17 @@ class _EditorToolbarState extends State<EditorToolbar> {
               attribute: Attribute.inlineCode,
             ),
             QuillToolbarToggleStyleButton(
-                controller: widget.controller, attribute: Attribute.codeBlock),
+              options: const QuillToolbarToggleStyleButtonOptions(
+                iconData: Icons.code_off_outlined
+              ),
+                controller: widget.controller,
+                attribute: Attribute.codeBlock,),
             QuillToolbarToggleStyleButton(
               controller: widget.controller,
               attribute: Attribute.blockQuote,
+            ),
+            QuillToolbarToggleCheckListButton(
+              controller: widget.controller,
             ),
             QuillToolbarLinkStyleButton(controller: widget.controller),
           ],

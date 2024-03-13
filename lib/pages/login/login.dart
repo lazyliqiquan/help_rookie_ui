@@ -54,7 +54,7 @@ class _LoginState extends State<Login> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text('Help cookie',
-            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20)),
+            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25)),
         const SizedBox(height: 10),
         const Text('Give someone a rose, leave fragrance in your hand',
             style: TextStyle(

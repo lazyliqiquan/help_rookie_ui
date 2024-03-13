@@ -5,7 +5,13 @@ import 'package:dio/dio.dart';
 import 'package:intl/intl.dart' as intl;
 
 class EditModel extends ChangeNotifier {
+  bool loading = true;
+  bool isReadOnly = false;
   String? document; //修改的时候
+
+  //进行编辑前的数据初始化
+  // Future<int> editInit() async {}
+
   //添加新的求助
   Future<ReturnState> addSeekHelp(List<int>? file, int score, String document,
       String language, int maxDocumentLength) async {

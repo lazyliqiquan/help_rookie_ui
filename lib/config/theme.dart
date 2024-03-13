@@ -24,7 +24,7 @@ class AppTheme extends ChangeNotifier {
 
   Locale? _locale;
 
-  Locale? get locale => _locale;
+  Locale? get locale => _locale ?? const Locale('en');
 
   set locale(Locale? locale) {
     _locale = locale;

@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:help_rookie_ui/data/config/network.dart';
-import 'package:help_rookie_ui/other/return_state.dart';
 
 //一些配置信息，如用户名，上传文件大小限制等
 class WebConfigModel extends ChangeNotifier {
@@ -11,21 +10,19 @@ class WebConfigModel extends ChangeNotifier {
   int maxDocumentLength = 0; //帖子描述文档的最大值
 
   //获取网站配置信息
-  Future<ReturnState> getWebConfig() async {
-    //正常应该大于0
-    if (maxHelpFileSize <= 0) {
-      return ReturnState.success('');
-    }
-
+  static Future<WebConfigModel> getWebConfig() async {
+    WebConfigModel webConfigModel = WebConfigModel();
     return await WebNetwork.dio.post('/web-config').then((value) {
       if (value.data['code'] == 0) {
         dynamic data = value.data['data'];
-        maxHelpFileSize = data['maxHelpFileSize'];
-        maxShareFileSize = data['maxShareFileSize'];
-        maxDocumentLength = data['maxDocumentLength'];
-        notifyListeners();
+        webConfigModel.maxHelpFileSize = data['maxHelpFileSize'];
+        webConfigModel.maxShareFileSize = data['maxShareFileSize'];
+        webConfigModel.maxDocumentLength = data['maxDocumentLength'];
       }
-      return ReturnState.fromJson(value.data);
+      return webConfigModel;
+    }).onError((error, stackTrace) {
+      debugPrint(error.toString());
+      return WebConfigModel();
     });
   }
 }

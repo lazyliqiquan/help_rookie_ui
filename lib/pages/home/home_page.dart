@@ -10,6 +10,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container(
+      height: 1000,
+      color: const Color(0xfff0f2f5),
+      child: Center(
+        child: Container(height: 50, width: 50,color: Colors.white,),
+      ),
+    );
   }
 }

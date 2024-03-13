@@ -19,10 +19,19 @@ class _TopNavigationBarState extends State<TopNavigationBar> {
   Widget build(BuildContext context) {
     final appTheme = context.watch<AppTheme>();
     return Container(
-      height: 40,
+      height: 50,
+      margin: const EdgeInsets.only(bottom: 3),
       decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(width: 2, color: appTheme.color.lighter))),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey[80],
+                offset: const Offset(2.0, 2.0),
+                blurRadius: 4.0),
+          ],
+          borderRadius: BorderRadius.circular(4),
+          border:
+              Border(top: BorderSide(width: 2, color: appTheme.color.lighter))),
       child: Stack(
         children: [
           Align(
@@ -53,9 +62,11 @@ class _TopNavigationBarState extends State<TopNavigationBar> {
                         child: Text(
                           _strList[i ~/ 2],
                           style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
                               color: (i ~/ 2 + 1) == _route
                                   ? appTheme.color.normal
-                                  : Colors.black),
+                                  : Colors.grey[120]),
                         ),
                         onPressed: () {
                           setState(() {

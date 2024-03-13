@@ -44,9 +44,9 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenLimit(
-        child: LoginBackground(
-            child: Column(
+    return LoginBackground(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const LoginTopBar(isRegister: true),
         const SizedBox(height: 20),
@@ -85,7 +85,7 @@ class _RegisterState extends State<Register> {
                 await MyInfoBar.showInfo(context, returnState);
               }
               //这两个应该哪个在前，哪个在后？
-              if(context.mounted && returnState.code == 0) {
+              if (context.mounted && returnState.code == 0) {
                 context.goNamed('login');
               }
             }.throttle(),
@@ -93,7 +93,7 @@ class _RegisterState extends State<Register> {
           ),
         )
       ],
-    )));
+    ));
   }
 }
 
@@ -131,21 +131,19 @@ class LoginTopBar extends StatelessWidget {
               }),
         ),
         const SizedBox(width: 40),
-        Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(_strList[isRegister ? 0 : 1],
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600)),
-              Text(
-                _strList[2],
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey[200],
-                ),
-              )
-            ]),
+        Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Text(_strList[isRegister ? 0 : 1],
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          Text(
+            _strList[2],
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey[200],
+            ),
+          )
+        ]),
         const SizedBox(width: 40),
         Icon(_iconDataList[isRegister ? 0 : 1], size: 30)
       ],
