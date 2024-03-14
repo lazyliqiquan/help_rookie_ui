@@ -6,6 +6,7 @@ import 'package:help_rookie_ui/pages/home/home_page.dart';
 import 'package:help_rookie_ui/pages/login/find_password.dart';
 import 'package:help_rookie_ui/pages/login/login.dart';
 import 'package:help_rookie_ui/pages/login/register.dart';
+import 'package:help_rookie_ui/pages/seek_help/seek_help.dart';
 
 class MyRouter {
   GoRouter get goRouter => _router;
@@ -37,6 +38,10 @@ class MyRouter {
               path: 'find-password',
               name: 'find-password',
               builder: (context, state) => const FindPassword()),
+          GoRoute(
+              path: 'seek-help',
+              name: 'seek-help',
+              builder: (context, state) => const SeekHelpList()),
           GoRoute(
             path: 'edit',
             name: 'edit',
