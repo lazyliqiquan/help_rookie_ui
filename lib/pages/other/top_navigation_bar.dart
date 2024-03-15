@@ -19,7 +19,7 @@ class _TopNavigationBarState extends State<TopNavigationBar> {
   Widget build(BuildContext context) {
     final appTheme = context.watch<AppTheme>();
     return Container(
-      height: 50,
+      height: 47,
       margin: const EdgeInsets.only(bottom: 3),
       decoration: BoxDecoration(
           color: Colors.white,

@@ -6,8 +6,7 @@ import 'package:help_rookie_ui/other/throttle.dart';
 import 'package:help_rookie_ui/pages/login/background.dart';
 import 'package:help_rookie_ui/pages/login/login.dart';
 import 'package:help_rookie_ui/pages/login/register.dart';
-import 'package:help_rookie_ui/pages/other/screen_limit.dart';
-import 'package:help_rookie_ui/widgets/info_bar.dart';
+import 'package:help_rookie_ui/widgets/macro_mixin.dart';
 import 'package:provider/provider.dart';
 
 class FindPassword extends StatefulWidget {
@@ -17,7 +16,7 @@ class FindPassword extends StatefulWidget {
   State<FindPassword> createState() => _FindPasswordState();
 }
 
-class _FindPasswordState extends State<FindPassword> {
+class _FindPasswordState extends State<FindPassword> with MacroComponent {
   static const List<String> _strList = [
     'password',
     'confirm password',
@@ -81,7 +80,8 @@ class _FindPasswordState extends State<FindPassword> {
                           textEditingControllers[1].text,
                         );
                 if (context.mounted) {
-                  await MyInfoBar.showInfo(context, returnState);
+                  showInfo(context, returnState);
+                  // await MyInfoBar.showInfo(context, returnState);
                 }
                 if (context.mounted && returnState.code == 0) {
                   context.goNamed('login');

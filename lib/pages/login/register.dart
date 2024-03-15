@@ -5,8 +5,7 @@ import 'package:help_rookie_ui/other/return_state.dart';
 import 'package:help_rookie_ui/other/throttle.dart';
 import 'package:help_rookie_ui/pages/login/background.dart';
 import 'package:help_rookie_ui/pages/login/login.dart';
-import 'package:help_rookie_ui/pages/other/screen_limit.dart';
-import 'package:help_rookie_ui/widgets/info_bar.dart';
+import 'package:help_rookie_ui/widgets/macro_mixin.dart';
 import 'package:provider/provider.dart';
 
 class Register extends StatefulWidget {
@@ -16,7 +15,7 @@ class Register extends StatefulWidget {
   State<Register> createState() => _RegisterState();
 }
 
-class _RegisterState extends State<Register> {
+class _RegisterState extends State<Register> with MacroComponent {
   late List<TextEditingController> textEditingControllers;
 
   static const List<String> _strList = [
@@ -82,7 +81,7 @@ class _RegisterState extends State<Register> {
                       textEditingControllers[1].text,
                       textEditingControllers[2].text);
               if (context.mounted) {
-                await MyInfoBar.showInfo(context, returnState);
+                await showInfo(context, returnState);
               }
               //这两个应该哪个在前，哪个在后？
               if (context.mounted && returnState.code == 0) {

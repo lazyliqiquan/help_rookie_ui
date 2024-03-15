@@ -5,7 +5,7 @@ import 'package:help_rookie_ui/data/user/login.dart';
 import 'package:help_rookie_ui/other/return_state.dart';
 import 'package:help_rookie_ui/other/throttle.dart';
 import 'package:help_rookie_ui/pages/login/background.dart';
-import 'package:help_rookie_ui/widgets/info_bar.dart';
+import 'package:help_rookie_ui/widgets/macro_mixin.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
@@ -15,7 +15,7 @@ class Login extends StatefulWidget {
   State<Login> createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginState extends State<Login> with MacroComponent{
   int _loginType = 0;
   late List<TextEditingController> textEditingControllers;
   static const List<IconData> _iconList = [
@@ -143,7 +143,8 @@ class _LoginState extends State<Login> {
                     .login(_loginType, textEditingControllers[0].text,
                         textEditingControllers[1].text);
                 if (context.mounted) {
-                  await MyInfoBar.showInfo(context, returnState);
+                  // await MyInfoBar.showInfo(context, returnState);
+                  showInfo(context, returnState);
                 }
                 if (context.mounted && returnState.code == 0) {
                   context.goNamed('home');
@@ -178,7 +179,7 @@ class SendCode extends StatefulWidget {
   State<SendCode> createState() => _SendCodeState();
 }
 
-class _SendCodeState extends State<SendCode> {
+class _SendCodeState extends State<SendCode> with MacroComponent{
   @override
   Widget build(BuildContext context) {
     LoginModel loginModel = context.watch<LoginModel>();
@@ -190,7 +191,7 @@ class _SendCodeState extends State<SendCode> {
             ReturnState returnState =
                 await context.read<LoginModel>().sendCode(widget.getEmail());
             if (context.mounted) {
-              await MyInfoBar.showInfo(context, returnState);
+              showInfo(context, returnState);
             }
           }.throttleArg(),
           child: Text(loginModel.countDown <= 0

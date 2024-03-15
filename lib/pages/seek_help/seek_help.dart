@@ -15,7 +15,6 @@ class _SeekHelpListState extends State<SeekHelpList> {
   Widget build(BuildContext context) {
     return ScreenLimit(
         widgetHeight: 1500,
-        sideFloatWidget: const SeekHelpSideFloatButton(),
         child: Container(
           color: Colors.white,
           padding: const EdgeInsets.all(30),

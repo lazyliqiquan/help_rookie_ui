@@ -9,15 +9,13 @@ class ScreenLimit extends StatelessWidget {
   ScreenLimit(
       {Key? key,
       required this.child,
-      this.sideFloatWidget,
-      this.topFloatWidget,
       this.widgetHeight = 1000,
       this.isCustom = true,
+      this.floatWidgets = const [],
       this.showTopNavigationBar = true})
       : super(key: key);
   final Widget child;
-  final Widget? sideFloatWidget; //侧边浮动按钮
-  final Widget? topFloatWidget; //顶部浮动按钮
+  final List<Widget> floatWidgets; //侧边浮动按钮
   final double widgetHeight;
 
   //传递过来的child是否占据整个屏幕
@@ -41,25 +39,22 @@ class ScreenLimit extends StatelessWidget {
             padding: const EdgeInsets.only(right: 22),
             child: Column(children: [
               if (showTopNavigationBar) const TopNavigationBar(),
-              if (!isCustom)
-                SizedBox(
-                  width: maxWidth,
-                  height: maxHeight,
+              Container(
+                height: isCustom
+                    ? widgetHeight
+                    : maxHeight + ScreenConfig.verticalWidgetMargin,
+                width: isCustom ? null : maxWidth,
+                padding: const EdgeInsets.only(
+                    bottom: ScreenConfig.verticalWidgetMargin),
+                color: const Color(0xfff0f2f5),
+                child: Center(
                   child: child,
-                )
-              else
-                Container(
-                  height: widgetHeight,
-                  color: const Color(0xfff0f2f5),
-                  child: Center(
-                    child: child,
-                  ),
                 ),
+              ),
               const ICPRecord()
             ]),
           ),
-          if (sideFloatWidget != null) sideFloatWidget!,
-          if (topFloatWidget != null) topFloatWidget!,
+          ...floatWidgets //应该吧浮动组件放到后面，这样他的层级就会高一点
         ],
       );
     }));

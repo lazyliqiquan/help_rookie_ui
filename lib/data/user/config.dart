@@ -1,6 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:help_rookie_ui/data/config/network.dart';
 
+enum AuthType { addSeekHelp, addLendHand }
+
 //一些配置信息，如用户名，上传文件大小限制等
 class WebConfigModel extends ChangeNotifier {
 //  网站的配置
@@ -10,7 +12,7 @@ class WebConfigModel extends ChangeNotifier {
   int maxDocumentLength = 0; //帖子描述文档的最大值
 
   //获取网站配置信息
-  static Future<WebConfigModel> getWebConfig() async {
+  Future<WebConfigModel> getWebConfig() async {
     WebConfigModel webConfigModel = WebConfigModel();
     return await WebNetwork.dio.post('/web-config').then((value) {
       if (value.data['code'] == 0) {
@@ -24,5 +26,13 @@ class WebConfigModel extends ChangeNotifier {
       debugPrint(error.toString());
       return WebConfigModel();
     });
+  }
+
+//  跳转到田间求助页面的时候，需要做一次鉴权：登录没有，有没有相关权限
+  Future<int> authenticate() async {
+    // FormData formData = FormData.fromMap({
+    //   'option':
+    // });
+    return 1;
   }
 }

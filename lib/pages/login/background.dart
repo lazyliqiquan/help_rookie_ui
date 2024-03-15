@@ -12,24 +12,20 @@ class LoginBackground extends StatelessWidget {
     return ScreenLimit(
       isCustom: false,
       showTopNavigationBar: false,
-      child: Container(
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: [Colors.white, Colors.grey])),
-        child: Center(
-          child: Container(
-            width: 400,
-            height: 450,
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.0),
-              color: Colors.grey[40],
-              border: Border.all(
-                color: theme.resources.controlStrokeColorSecondary,
-              ),
+      child: Center(
+        child: Container(
+          width: 400,
+          height: 400,
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            color: Colors.grey[20],
+            border: Border.all(
+              color: theme.resources.controlStrokeColorSecondary,
             ),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0), child: child),
           ),
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0), child: child),
         ),
       ),
     );
