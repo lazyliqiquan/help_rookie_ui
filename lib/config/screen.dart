@@ -6,7 +6,7 @@ class ScreenConfig {
 
   //主界面和左边的外边距
   static const double showWidgetLeftMargin =
-      verticalWidgetMargin * 2 + sideFloatWidgetWidth;
+      horizontalWidgetMargin + sideFloatWidgetWidth;
 
   //竖直方向组件间的间距
   static const double verticalWidgetMargin = 40;

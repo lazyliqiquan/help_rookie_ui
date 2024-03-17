@@ -3,6 +3,7 @@ import 'package:help_rookie_ui/other/helper.dart';
 import 'package:help_rookie_ui/other/return_state.dart';
 
 mixin MacroComponent {
+
   Future<void> showInfo(BuildContext context, ReturnState returnState,
       {int duration = 5}) async {
     await displayInfoBar(context,

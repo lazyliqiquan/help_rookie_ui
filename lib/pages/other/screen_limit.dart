@@ -45,6 +45,9 @@ class ScreenLimit extends StatelessWidget {
                     : maxHeight + ScreenConfig.verticalWidgetMargin,
                 width: isCustom ? null : maxWidth,
                 padding: const EdgeInsets.only(
+                    left: ScreenConfig.horizontalWidgetMargin,
+                    right: ScreenConfig.horizontalWidgetMargin,
+                    top: ScreenConfig.verticalWidgetMargin,
                     bottom: ScreenConfig.verticalWidgetMargin),
                 color: const Color(0xfff0f2f5),
                 child: Center(

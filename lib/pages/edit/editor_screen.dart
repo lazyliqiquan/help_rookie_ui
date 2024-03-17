@@ -25,6 +25,8 @@ class QuillScreen extends StatefulWidget {
   State<QuillScreen> createState() => _QuillScreenState();
 }
 
+final GlobalKey contentKey = GlobalKey();
+
 class _QuillScreenState extends State<QuillScreen> {
   static final _controller = QuillController.basic();
   static final _editorFocusNode = FocusNode();
@@ -73,15 +75,14 @@ class _QuillScreenState extends State<QuillScreen> {
           if (!editModel.isReadOnly) floatEditToolbar
         ],
         child: Container(
-          height: 1200,
-          color: Colors.white,
+          height: editModel.isEditing ? 1200 : null,
+          color: editModel.isEditing ? Colors.white : null,
           margin: EdgeInsets.only(
               left: ScreenConfig.showWidgetLeftMargin,
-              right: ScreenConfig.horizontalWidgetMargin,
-              top: ScreenConfig.verticalWidgetMargin +
-                  (editModel.isReadOnly ? 0 : ScreenConfig.topWidgetHeight)),
+              top: editModel.isReadOnly ? 0 : ScreenConfig.topWidgetHeight),
           child: editModel.isEditing
               ? MyQuillEditor(
+                  key: contentKey,
                   configurations: QuillEditorConfigurations(
                     sharedConfigurations: _sharedConfigurations,
                     controller: _controller,

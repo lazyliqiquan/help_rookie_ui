@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:help_rookie_ui/config/screen.dart';
 import 'package:help_rookie_ui/data/edit/edit.dart';
 import 'package:help_rookie_ui/other/throttle.dart';
+import 'package:help_rookie_ui/pages/edit/editor_screen.dart';
 import 'package:help_rookie_ui/widgets/macro_mixin.dart';
 import 'package:provider/provider.dart';
 
@@ -24,11 +25,16 @@ class EditFloatSideWidget extends StatefulWidget {
 class _EditFloatSideWidgetState extends State<EditFloatSideWidget>
     with MacroComponent {
   static List<IconData> iconDataList = [
-    FluentIcons.return_to_session,
-    FluentIcons.cloud_upload
+    FluentIcons.chrome_back,
+    FluentIcons.cloud_upload,
+    FluentIcons.unknown
   ];
 
-  static const List<String> tooltips = ['Exit edit mode', 'Submit a post'];
+  static const List<String> tooltips = [
+    'Exit edit mode',
+    'Submit a post',
+    'Learn more'
+  ];
 
   IconData _getIcon(bool isEditing, bool isReadOnly) {
     if (isEditing) {
@@ -55,7 +61,7 @@ class _EditFloatSideWidgetState extends State<EditFloatSideWidget>
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(4)),
           width: ScreenConfig.sideFloatWidgetWidth,
-          height: 150,
+          height: (iconDataList.length + 1) * 50,
           child: Column(
               children: List.generate(tooltips.length + 1, (index) {
             return Expanded(
@@ -71,16 +77,13 @@ class _EditFloatSideWidgetState extends State<EditFloatSideWidget>
                 child: Tooltip(
                   message: index == 1
                       ? _getTooltip(editModel.isEditing, editModel.isReadOnly)
-                      : tooltips[index ~/ 2],
+                      : tooltips[index ~/ 2 + index % 2],
                   displayHorizontally: true,
                   useMousePosition: false,
                   child: IconButton(
-                    icon: Icon(
-                        index == 1
-                            ? _getIcon(
-                                editModel.isEditing, editModel.isReadOnly)
-                            : iconDataList[index ~/ 2],
-                        size: ScreenConfig.normalIconSize),
+                    icon: Icon(index == 1
+                        ? _getIcon(editModel.isEditing, editModel.isReadOnly)
+                        : iconDataList[index ~/ 2 + index % 2]),
                     onPressed: () async {
                       if (index == 0) {
                         if (await showConfirmDialog(context, [
@@ -97,9 +100,14 @@ class _EditFloatSideWidgetState extends State<EditFloatSideWidget>
                         } else {
                           editModel.isEditing = true;
                         }
-                      } else {
+                      } else if (index == 2) {
                         editModel.isEditing = false;
                         editModel.isReadOnly = true;
+                      } else {
+                        final RenderBox contentBox = contentKey.currentContext!
+                            .findRenderObject() as RenderBox;
+                        // debugPrint();
+                        //  todo 弹出一个显示信息的对话框(文档大小限制，文档行数限制等信息)
                       }
                     }.throttle(),
                   ),
