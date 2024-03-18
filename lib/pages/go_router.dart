@@ -1,11 +1,15 @@
-import 'package:flutter_quill/flutter_quill.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:help_rookie_ui/data/edit/edit.dart';
 import 'package:help_rookie_ui/pages/edit/editor_screen.dart';
 import 'package:help_rookie_ui/pages/home/home.dart';
 import 'package:help_rookie_ui/pages/login/find_password.dart';
 import 'package:help_rookie_ui/pages/login/login.dart';
 import 'package:help_rookie_ui/pages/login/register.dart';
 import 'package:help_rookie_ui/pages/seek_help/seek_help.dart';
+import 'package:provider/provider.dart';
 
 class MyRouter {
   GoRouter get goRouter => _router;
@@ -42,41 +46,57 @@ class MyRouter {
           GoRoute(
               path: 'edit',
               name: 'edit',
-              builder: (context, state) => QuillScreen(document: ''))
-          // GoRoute(
-          //   path: 'edit',
-          //   name: 'edit',
-          //   builder: (context, state) {
-          //     return EditorScreen(document: Document());
-          //   },
-          // redirect: (context, state) {
-          //   //不管url是什么，都直接跳转到主页面的，而不是子路由
-          //   return '/edit/seek-help';
-          // },
-          // routes: [
-          //   GoRoute(
-          //       path: 'seek-help',
-          //       name: 'seek-help',
-          //       builder: (context, state) =>
-          //           const EditorScreen(editStatus: 0, routeArgs: []),
-          //       routes: [
-          //         GoRoute(
-          //             path: ':seek-help-id',
-          //             builder: (context, state) =>
-          //                 const EditorScreen(editStatus: 1, routeArgs: []))
-          //       ]),
-          //   GoRoute(
-          //       path: ':seek-help-id/lend-hand',
-          //       builder: (context, state) =>
-          //           const EditorScreen(editStatus: 2, routeArgs: []),
-          //       routes: [
-          //         GoRoute(
-          //             path: ':lend-hand-id',
-          //             builder: (context, state) =>
-          //                 const EditorScreen(editStatus: 3, routeArgs: []))
-          //       ]),
-          // ]
-          // ),
+              builder: (context, state) {
+                //解析过程好像是从根出发，然后向下，每个组件的都会渲染一遍
+                //但是我们加载数据是在build方法里面加载的，所以还应该判断一下最终显示的页面是不是自己
+                return QuillScreen(
+                  editOption: 0,
+                  isSelf: state.uri.toString().split('/').length == 2,
+                );
+              },
+              routes: [
+                //好像还有先后顺序，':id' 应该放后面
+                GoRoute(
+                    path: 'lend-hand/:seekHelpId',
+                    builder: (context, state) {
+                      final int? seekHelpId =
+                          int.tryParse(state.pathParameters['seekHelpId']!);
+
+                      return QuillScreen(
+                        editOption: 2,
+                        seekHelpId: seekHelpId,
+                        isSelf: state.uri.toString().split('/').length == 4,
+                      );
+                    },
+                    routes: [
+                      GoRoute(
+                          path: ':lendHandId',
+                          builder: (context, state) {
+                            final int? seekHelpId = int.tryParse(
+                                state.pathParameters['seekHelpId']!);
+                            final int? lendHandId = int.tryParse(
+                                state.pathParameters['lendHandId']!);
+
+                            return QuillScreen(
+                              editOption: 3,
+                              seekHelpId: seekHelpId,
+                              lendHandId: lendHandId,
+                              isSelf: true,
+                            );
+                          })
+                    ]),
+                GoRoute(
+                    path: ':seekHelpId',
+                    builder: (context, state) {
+                      final int? seekHelpId = int.tryParse(
+                          state.pathParameters['seekHelpId'].toString());
+                      return QuillScreen(
+                        editOption: 1,
+                        seekHelpId: seekHelpId,
+                        isSelf: true,
+                      );
+                    })
+              ])
         ])
   ]);
 }

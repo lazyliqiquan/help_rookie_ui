@@ -15,11 +15,19 @@ import 'package:provider/provider.dart';
 
 class QuillScreen extends StatefulWidget {
   const QuillScreen({
-    required this.document,
+    this.editOption = 0,
+    this.seekHelpId,
+    this.lendHandId,
+    this.isSelf = false,
     super.key,
   });
 
-  final String document;
+  final int? seekHelpId;
+  final int? lendHandId;
+  final bool isSelf;
+
+  // 0 新增求助 1 修改求助 2 新增帮助 3 修改帮助
+  final int editOption;
 
   @override
   State<QuillScreen> createState() => _QuillScreenState();
@@ -28,32 +36,37 @@ class QuillScreen extends StatefulWidget {
 final GlobalKey contentKey = GlobalKey();
 
 class _QuillScreenState extends State<QuillScreen> {
+  //我是用静态成员，document虽然调用了notifyListeners(),但是能监听得到吗？他是quill内部自己维护，应该可以
   static final _controller = QuillController.basic();
   static final _editorFocusNode = FocusNode();
   static final _editorScrollController = ScrollController();
 
+
+  //好吧，决定了，就在initState里面请求
   @override
   void initState() {
     super.initState();
 
-    //不能用匿名方法传递，否则就重复监听了，可能倒是性能问题
+    //fixme go-router 不能用匿名方法传递，否则就重复监听了，可能倒是性能问题
     _controller.addListener(() {
-      debugPrint(_controller.document.length.toString());
-      debugPrint(_controller.document.toDelta().toString());
+      // debugPrint(_controller.document.length.toString());
+      // debugPrint(_controller.document.toDelta().toString());
     });
     //序列化
     // final json = jsonEncode(_controller.document.toDelta().toJson());
     //反序列化
-    if (widget.document.isEmpty) {
-      _controller.document = Document();
-    } else {
-      final json = jsonDecode(widget.document);
-      _controller.document = Document.fromJson(json);
-    }
+    _controller.document = Document();
+    // if (widget.document.isEmpty) {
+    // } else {
+    //   final json = jsonDecode(widget.document);
+    //   _controller.document = Document.fromJson(json);
+    // }
   }
 
   @override
   void dispose() {
+    //todo 要不会造成死循环吧
+    _dealFinally = false;
     super.dispose();
   }
 
@@ -93,6 +106,21 @@ class _QuillScreenState extends State<QuillScreen> {
                 )
               : const EditSubmitForm(),
         ));
+  }
+
+  bool _dealFinally = false;
+
+  //处理路由
+  void _deal() {
+    // 这里也能获取到context吗？
+    //不是调用自己的
+    if (!widget.isSelf || _dealFinally) {
+      return;
+    }
+    context.read<EditModel>().editAuthentication(
+        widget.editOption < 2, widget.editOption % 2 == 1,
+        seekHelpId: widget.seekHelpId, lendHandId: widget.lendHandId);
+    _dealFinally = true;
   }
 
   QuillSharedConfigurations get _sharedConfigurations {

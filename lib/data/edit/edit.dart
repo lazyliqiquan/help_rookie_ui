@@ -25,13 +25,13 @@ class EditModel extends ChangeNotifier {
   List<int>? codeFileBytes; //上传代码的二进制数据
   int remainReward = 0; //剩余金额
   int maxDocumentHeight = 0; //文档最大高度
-  int maxDocumentSize = 0; //文档最大限制
+  int maxDocumentLength = 0; //文档最大限制
   int maxPictureSize = 0; //文档中的所有图片最大限制
   int maxCodeFileSize = 0; //文档中上传文件的最大限制
-  String language = ''; //原始代码文件所属的语言
-  List<String> tags = []; //算法标签
-  ReturnState returnState = ReturnState.success('');
-
+  //如果是修改操作，请求分为两个操作，一个去获取环境配置，另一个去获取文档以及其他信息
+  // String language = ''; //原始代码文件所属的语言
+  // List<String> tags = []; //算法标签
+  ReturnState returnState = ReturnState.error('Url parse error');
 
   //在编辑的过程中应该监听输入内容的大小变化，超过现在就应该组织用户再输入新的内容了，
   //或者简单起见，也可以等到提交的时候再警告用户，但是这样子之前编辑的内容就白写了。
@@ -43,26 +43,51 @@ class EditModel extends ChangeNotifier {
 //  在跳转到添加求助页面的时候，要做一次鉴权：登录没有，有没有权限等
   // 0 添加求助帖子 1 修改求助帖子 2 添加帮助帖子 3 修改帮助帖子
 //  这里只是预判断一下，最后真正提交的时候还要判断一次
-  Future<void> editAuthentication() async {
+  Future<void> editAuthentication(bool isSeekHelp, bool isRebuild,
+      {int? seekHelpId, int? lendHandId}) async {
     late final int option;
     if (_isSeekHelp) {
       option = _isRebuild ? 1 : 0;
     } else {
-      option = _isRebuild ? 1 : 0;
+      option = _isRebuild ? 3 : 2;
+    }
+    if ((option == 1 || option == 2) && !_judgeId(seekHelpId)) {
+      return;
+    }
+    if (option == 3 && !_judgeId(lendHandId)) {
+      return;
     }
     FormData formData = FormData.fromMap({
-      'option': option.toString(),
+      'editOption': option.toString(),
+      'seekHelpId': seekHelpId ?? '',
+      'lendHandId': lendHandId ?? ''
     });
     //  需要从后端获取一些环境配置
-    await WebNetwork.dio
-        .post('/edit-authentication', data: formData)
-        .then((value) {
-      // 需要的环境配置 ： 文档中文本的大小，文档中图片的大小，代码文件的大小，用户金额剩余，
+    await WebNetwork.dio.post('/preEdit', data: formData).then((value) {
+      returnState = ReturnState.fromJson(value.data);
+      if (returnState.code == 0) {
+        _parseData(value.data);
+      }
     }).onError((error, stackTrace) {
+      returnState = ReturnState.error(error.toString());
       debugPrint(error.toString());
     });
     _isLoading = false;
     notifyListeners();
+  }
+
+  void _parseData(dynamic data) {
+    remainReward = data['remainReward'];
+    List<int> temp = data['documentLimit'];
+    maxDocumentHeight = temp[0];
+    maxDocumentLength = temp[1];
+    maxPictureSize = temp[2];
+    maxCodeFileSize = temp[3];
+  }
+
+  bool _judgeId(int? id) {
+    //这里判断，就不需要向后端发送请求了
+    return id != null && id > 0 && id < (1 << 30);
   }
 
   bool _isLoading = true;
