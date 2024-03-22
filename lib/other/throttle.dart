@@ -39,6 +39,8 @@ class FunctionProxy<T> {
   }
 }
 
+
+//好像异步函数就没有效了
 extension FunctionExt<T> on Function {
   VoidCallback throttle() {
     return FunctionProxy(this).throttle;

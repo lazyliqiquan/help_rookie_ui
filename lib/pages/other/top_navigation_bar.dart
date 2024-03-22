@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:animated_text_kit/animated_text_kit.dart' as at;
+import 'package:go_router/go_router.dart';
 import 'package:help_rookie_ui/config/theme.dart';
 import 'package:provider/provider.dart';
 
@@ -69,6 +70,9 @@ class _TopNavigationBarState extends State<TopNavigationBar> {
                                   : Colors.grey[120]),
                         ),
                         onPressed: () {
+                          if(i == 2) {
+                            context.goNamed('edit');
+                          }
                           setState(() {
                             _route = i ~/ 2 + 1;
                           });

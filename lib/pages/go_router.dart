@@ -55,36 +55,6 @@ class MyRouter {
                 );
               },
               routes: [
-                //好像还有先后顺序，':id' 应该放后面
-                GoRoute(
-                    path: 'lend-hand/:seekHelpId',
-                    builder: (context, state) {
-                      final int? seekHelpId =
-                          int.tryParse(state.pathParameters['seekHelpId']!);
-
-                      return QuillScreen(
-                        editOption: 2,
-                        seekHelpId: seekHelpId,
-                        isSelf: state.uri.toString().split('/').length == 4,
-                      );
-                    },
-                    routes: [
-                      GoRoute(
-                          path: ':lendHandId',
-                          builder: (context, state) {
-                            final int? seekHelpId = int.tryParse(
-                                state.pathParameters['seekHelpId']!);
-                            final int? lendHandId = int.tryParse(
-                                state.pathParameters['lendHandId']!);
-
-                            return QuillScreen(
-                              editOption: 3,
-                              seekHelpId: seekHelpId,
-                              lendHandId: lendHandId,
-                              isSelf: true,
-                            );
-                          })
-                    ]),
                 GoRoute(
                     path: ':seekHelpId',
                     builder: (context, state) {
@@ -93,9 +63,40 @@ class MyRouter {
                       return QuillScreen(
                         editOption: 1,
                         seekHelpId: seekHelpId,
-                        isSelf: true,
+                        isSelf: state.uri.toString().split('/').length == 3,
                       );
-                    })
+                    },
+                    routes: [
+                      GoRoute(
+                          path: 'lend-hand',
+                          builder: (context, state) {
+                            final int? seekHelpId = int.tryParse(
+                                state.pathParameters['seekHelpId']!);
+
+                            return QuillScreen(
+                              editOption: 2,
+                              seekHelpId: seekHelpId,
+                              isSelf:
+                                  state.uri.toString().split('/').length == 4,
+                            );
+                          },
+                          routes: [
+                            GoRoute(
+                                path: ':lendHandId',
+                                builder: (context, state) {
+                                  final int? seekHelpId = int.tryParse(
+                                      state.pathParameters['seekHelpId']!);
+                                  final int? lendHandId = int.tryParse(
+                                      state.pathParameters['lendHandId']!);
+                                  return QuillScreen(
+                                    editOption: 3,
+                                    seekHelpId: seekHelpId,
+                                    lendHandId: lendHandId,
+                                    isSelf: true,
+                                  );
+                                })
+                          ]),
+                    ])
               ])
         ])
   ]);

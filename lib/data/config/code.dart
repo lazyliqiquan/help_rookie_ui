@@ -38,4 +38,8 @@ class WebSupportCode {
     });
     return res;
   }
+
+  static List<String> allFileType() {
+    return _suffixFileMap.keys.toList();
+  }
 }

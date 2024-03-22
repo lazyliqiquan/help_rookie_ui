@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
             glowFactor: is10footScreen(context) ? 2.0 : 0.0,
           )),
       theme: FluentThemeData(
-        iconTheme: IconThemeData(size: 27, color: appTheme.color),
+        iconTheme: IconThemeData(size: 20, color: appTheme.color),
         scrollbarTheme: ScrollbarThemeData(
             backgroundColor: Colors.transparent,
             scrollbarColor: Colors.grey[110],

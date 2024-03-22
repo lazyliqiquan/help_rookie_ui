@@ -1,5 +1,4 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:help_rookie_ui/pages/other/loading.dart';
 import 'package:help_rookie_ui/pages/other/screen_limit.dart';
 
 class Home extends StatefulWidget {
@@ -17,8 +16,11 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return true ? const LoadingWidget() : ScreenLimit(
-      child: Container(),
+    return ScreenLimit(
+      isCustom: false,
+      child: const Center(
+        child: Text('home'),
+      ),
     );
   }
 }

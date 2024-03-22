@@ -1,9 +1,13 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:help_rookie_ui/data/config/code.dart';
 import 'package:help_rookie_ui/data/config/network.dart';
+import 'package:help_rookie_ui/other/helper.dart';
 import 'package:help_rookie_ui/other/return_state.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:image_picker/image_picker.dart' as img;
+import 'dart:convert' show jsonEncode;
 
 /*
 * 因为求助帖子 和 帮助帖子展示的时候需要的内容是差不多的(文档，代码)
@@ -22,12 +26,14 @@ class EditModel extends ChangeNotifier {
   //静态成员notifyListeners()的时候通知不到界面更新(虽然数据确实变了)
   String document = ''; //文档(修改模式下有效)
   Map<String, img.XFile> imageFiles = {}; //key 图片文件路径 value 图片文件
-  List<int>? codeFileBytes; //上传代码的二进制数据
+  FilePickerResult? _filePickerResult;
+  List<String> _tags = []; //标签
+  String language = '';
   int remainReward = 0; //剩余金额
   int maxDocumentHeight = 0; //文档最大高度
   int maxDocumentLength = 0; //文档最大限制
   int maxPictureSize = 0; //文档中的所有图片最大限制
-  int maxCodeFileSize = 0; //文档中上传文件的最大限制
+  int maxCodeFileSize = 10; //文档中上传文件的最大限制
   //如果是修改操作，请求分为两个操作，一个去获取环境配置，另一个去获取文档以及其他信息
   // String language = ''; //原始代码文件所属的语言
   // List<String> tags = []; //算法标签
@@ -36,8 +42,81 @@ class EditModel extends ChangeNotifier {
   //在编辑的过程中应该监听输入内容的大小变化，超过现在就应该组织用户再输入新的内容了，
   //或者简单起见，也可以等到提交的时候再警告用户，但是这样子之前编辑的内容就白写了。
   //代码文件，悬赏，文档，图片，语言，日期(更新或创建),标签
-  Future<int> addSeekHelp() async {
-    return 1;
+  Future<ReturnState> addSeekHelp(
+      int reward, List<Map<String, dynamic>> document) async {
+    isUploading = true;
+    if (_filePickerResult == null) {
+      return ReturnState.warning('Code file not selected');
+    }
+    _parseImageFromDocument(document);
+    //判断文档中的图片是否都存在，有一张文档中的图片不存在就返回错误
+    for (var element in _imagePathFromDocument) {
+      if (!imageFiles.keys.contains(element)) {
+        return ReturnState.error('The locally cached image does not exist');
+      }
+    }
+
+    FormData formData = FormData.fromMap({
+      'editOption': '0',
+      'imageNum': _imagePathFromDocument.length.toString(),
+      'reward': reward,
+      'document': jsonEncode(document),
+      'tags': _tags.join('#'),
+      'language': WebSupportCode.fileToLang(
+          _filePickerResult!.files.first.name.split('.').last),
+      'uploadTime': intl.DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now())
+    });
+    //将代码文件加载到表单中
+    formData.files.add(MapEntry(
+        'codeFile',
+        MultipartFile.fromBytes(_filePickerResult!.files.first.bytes!,
+            filename: 'codeFile')));
+    //将图片加载到表单中
+    for (int i = 0; i < _imagePathFromDocument.length; i++) {
+      formData.files.add(MapEntry(
+          'image$i',
+          MultipartFile.fromBytes(
+              await imageFiles[_imagePathFromDocument[i]]!.readAsBytes(),
+              filename: 'image$i')));
+    }
+    return WebNetwork.dio.post('/add-seek-help', data: formData).then((value) {
+      isUploading = false;
+      return ReturnState.fromJson(value.data);
+    });
+  }
+
+  //清空好像不算重新赋值，因为操作的数组一直是同一个,只是把它清空了而已
+  final List<String> _imagePathFromDocument = [];
+
+  void _parseImageFromDocument(List<Map<String, dynamic>> document) {
+    _imagePathFromDocument.clear();
+    for (int i = 0; i < document.length; i++) {
+      _dfs(document[i]);
+    }
+  }
+
+  void _dfs(Map<String, dynamic> oneRowData) {
+    oneRowData.forEach((key, value) {
+      if (value is Map<String, dynamic>) {
+        _dfs(value);
+      } else {
+        if (key == 'image') {
+          _imagePathFromDocument.add(value.toString());
+        }
+      }
+    });
+  }
+
+  String filePickerInfo() {
+    if (_filePickerResult == null) {
+      return 'No code file is selected';
+    }
+    return 'File size : ${WebHelper.unitConversion(_filePickerResult!.files.first.size)}';
+  }
+
+  set filePickerResult(FilePickerResult file) {
+    _filePickerResult = file;
+    notifyListeners();
   }
 
 //  在跳转到添加求助页面的时候，要做一次鉴权：登录没有，有没有权限等
@@ -66,19 +145,20 @@ class EditModel extends ChangeNotifier {
     await WebNetwork.dio.post('/preEdit', data: formData).then((value) {
       returnState = ReturnState.fromJson(value.data);
       if (returnState.code == 0) {
-        _parseData(value.data);
+        _parseData(value.data['data']);
       }
     }).onError((error, stackTrace) {
       returnState = ReturnState.error(error.toString());
+      debugPrint('editAuthentication');
       debugPrint(error.toString());
     });
-    _isLoading = false;
     notifyListeners();
   }
 
   void _parseData(dynamic data) {
     remainReward = data['remainReward'];
-    List<int> temp = data['documentLimit'];
+    language = data['language'];
+    dynamic temp = data['documentLimit'];
     maxDocumentHeight = temp[0];
     maxDocumentLength = temp[1];
     maxPictureSize = temp[2];
@@ -90,18 +170,38 @@ class EditModel extends ChangeNotifier {
     return id != null && id > 0 && id < (1 << 30);
   }
 
-  bool _isLoading = true;
+  List<String> get tags => _tags;
+
+  //可以添加,删除和赋值,据类型判断
+  set tags(dynamic data) {
+    if (data is int) {
+      // 删除指定下标的标签
+      _tags.removeAt(data);
+      notifyListeners();
+    } else if (data is String) {
+      // 添加标签
+      _tags.add(data);
+      notifyListeners();
+    } else {
+      // 修改模式，获取之前的标签
+      _tags = [...data];
+      // 不能在initState期间调用notifyListeners()
+    }
+    debugPrint(_tags.toString());
+  }
+
+  bool _isUploading = false; //是否正在上传
   bool _isReadOnly = false;
   bool _isEditing = true; //是否正在编辑
   bool _isSeekHelp = true; //是否是关于求助帖子的
   bool _isRebuild = false; //是否是修改操作
 
-  bool get isLoading => _isLoading;
+  bool get isUploading => _isUploading;
 
-  set isLoading(bool value) {
+  set isUploading(bool value) {
     //处理一下，避免永远notifyListeners(),而且如果没有改变，也没有必要更新
-    if (_isLoading != value) {
-      _isLoading = value;
+    if (_isUploading != value) {
+      _isUploading = value;
       notifyListeners();
     }
   }

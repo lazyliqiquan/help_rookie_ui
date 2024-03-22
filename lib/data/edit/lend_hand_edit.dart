@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart' as img;
 
 class LendHandDocumentModel extends ChangeNotifier {
-  bool loading = false;
   String document = '';
 
   //静态成员notifyListeners()的时候通知不到界面更新(虽然数据确实变了)

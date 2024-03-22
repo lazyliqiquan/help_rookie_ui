@@ -42,6 +42,21 @@ class WebHelper {
     return result;
   }
 
+  static const List<String> units = ['Bytes', 'KB', 'MB'];
+
+  //单位转换，将比特转换为其他单位，方便查看
+  static String unitConversion(int bytes) {
+    int i = 0;
+    for (; i < units.length; i++) {
+      if (bytes >= 1024) {
+        bytes >>= 10;
+      } else {
+        break;
+      }
+    }
+    return '$bytes ${units[i]}';
+  }
+
   static bool isEmailValid(String email) {
     // 正则表达式模式用于匹配合法的邮箱地址格式
     const pattern = r'^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$';
