@@ -2,46 +2,24 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:help_rookie_ui/data/config/network.dart';
 import 'package:help_rookie_ui/data/config/other.dart';
+import 'package:help_rookie_ui/data/seek_help/common_display_info.dart';
 import 'package:help_rookie_ui/other/return_state.dart';
 
-class SeekHelpBasicInfo {
-  late final int id; //求助帖子编号
+class SeekHelpBasicInfo extends CommonDisplayInfo {
   //创建时间,存放在数据库中的日期是字符串，不能排序，但是可以根据主键来排序
-  late final String createTime;
   late final int reward; //悬赏
-  late final String title; //标题
   late final String language; //语言
-  late final bool status; //状态
-  late final int likeSum; //点赞数
   late final int lendHandSum; //帮助数
-  late final int commentSum; //评论数
-  late final int ban; //权限
-  late final List<String> tags; //标签
-  //用户头像地址(先把基本信息请求过来，用户头像通过stream去请求，请求失败用默认值),
-  //暂时没有必要展示用户信息，这样会导致一次请求的数据过大，想看就点进求助帖子里面看
-  late final List<int> avatars;
 
-  SeekHelpBasicInfo();
+  SeekHelpBasicInfo(super.data, this.reward, this.language, this.lendHandSum);
 
   factory SeekHelpBasicInfo.formJson(dynamic data) {
-    SeekHelpBasicInfo seekHelpBasicInfo = SeekHelpBasicInfo();
-    seekHelpBasicInfo.id = data['ID'];
-    seekHelpBasicInfo.createTime = data['CreateTime'];
-    seekHelpBasicInfo.reward = data['Reward'];
-    seekHelpBasicInfo.title = data['Title'];
-    seekHelpBasicInfo.language = data['Language'];
-    seekHelpBasicInfo.status = data['Status'];
-    seekHelpBasicInfo.ban = data['Ban'];
-    //fixme 不懂有没有问题哦
-    seekHelpBasicInfo.tags = data['Tags'];
-    return seekHelpBasicInfo;
+    return SeekHelpBasicInfo(
+        data, data['Reward'], data['Language'], data['LendHandSum']);
   }
 }
 
 class SeekHelpListModel extends ChangeNotifier {
-  //正在加载数据，此时应该显示加载动画
-  //加载失败就不改变原来加载之前的数据就好了，弹出一个对话框提示用户失败的原因即可
-  bool isLoading = true;
   List<SeekHelpBasicInfo> seekHelpList = [];
   int total = 0; //符合条件的数据总数
   int curPage = 0; //当前页数
@@ -61,14 +39,39 @@ class SeekHelpListModel extends ChangeNotifier {
       'status': status.toString()
     });
 
-    ReturnState returnState = await WebNetwork.dio
+    return await WebNetwork.dio
         .post('/seek-help-list', data: formData)
         .then((value) {
+      if (value.data['code'] == 0) {
+        dynamic tempData = value.data['data'];
+        total = tempData['total'];
+        List tempSeekHelpList = tempData['seek-help-list'];
+        seekHelpList = List.generate(tempSeekHelpList.length, (index) {
+          return SeekHelpBasicInfo.formJson(tempSeekHelpList[index]);
+        });
+        //虽然图片还没有加载成功，但是可以先展示其他数据，用户头像就先使用默认的
+        //特别注意，我们在initState里面使用的是read模式，就算调用notifyListeners()也没事，不会被获取到
+        //按钮点击的时候，监听使用的是watch，可以监听到变化
+        notifyListeners();
+        //  todo 异步请求图片数据，stream
+        for (var element in seekHelpList) {
+          if (element.imgOption == 1) {
+            continue;
+          }
+          //这里没有使用await，所以不会阻塞
+          element.fetchImage().then((value) {
+            if (value) {
+              //只有请求成功的时候才有必要通知界面更新
+              notifyListeners();
+            }
+          });
+        }
+      }
       return ReturnState.fromJson(value.data);
     }).onError((error, stackTrace) {
+      debugPrint(error.toString());
       return ReturnState.error(error.toString());
     });
-    return returnState;
   }
 }
 

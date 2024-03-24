@@ -83,7 +83,7 @@ class _QuillScreenState extends State<QuillScreen> {
           setState(() {
             _loading = false;
           });
-        //  todo 给编辑控制器加上监听事件
+          //  todo 给编辑控制器加上监听事件
         }
       });
     }
@@ -137,8 +137,10 @@ class _QuillScreenState extends State<QuillScreen> {
                       const EditFloatSideWidget(),
                       if (!editModel.isReadOnly) floatEditToolbar
                     ],
+                    widgetHeight: 1200,
                     child: Container(
-                      height: editModel.isEditing ? 1200 : null,
+                      //isCustom为true的时候，widgetHeight才有用
+                      // height: editModel.isEditing ? 1200 : null,
                       color: editModel.isEditing ? Colors.white : null,
                       margin: EdgeInsets.only(
                           left: ScreenConfig.showWidgetLeftMargin,

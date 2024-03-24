@@ -37,14 +37,18 @@ class EditModel extends ChangeNotifier {
   //如果是修改操作，请求分为两个操作，一个去获取环境配置，另一个去获取文档以及其他信息
   // String language = ''; //原始代码文件所属的语言
   // List<String> tags = []; //算法标签
+  //fixme editAuthentication修改了，但是还没有修改回来
   ReturnState returnState = ReturnState.error('Url parse error');
 
   //在编辑的过程中应该监听输入内容的大小变化，超过现在就应该组织用户再输入新的内容了，
   //或者简单起见，也可以等到提交的时候再警告用户，但是这样子之前编辑的内容就白写了。
   //代码文件，悬赏，文档，图片，语言，日期(更新或创建),标签
   Future<ReturnState> addSeekHelp(
-      int reward, List<Map<String, dynamic>> document) async {
+      int reward, String title, List<Map<String, dynamic>> document) async {
     isUploading = true;
+    if(title.isEmpty) {
+      return ReturnState.warning('The title should not be empty');
+    }
     if (_filePickerResult == null) {
       return ReturnState.warning('Code file not selected');
     }
@@ -60,6 +64,7 @@ class EditModel extends ChangeNotifier {
       'editOption': '0',
       'imageNum': _imagePathFromDocument.length.toString(),
       'reward': reward,
+      'title': title,
       'document': jsonEncode(document),
       'tags': _tags.join('#'),
       'language': WebSupportCode.fileToLang(
@@ -80,9 +85,20 @@ class EditModel extends ChangeNotifier {
               filename: 'image$i')));
     }
     return WebNetwork.dio.post('/add-seek-help', data: formData).then((value) {
+      if (value.data['code'] == 0) {
+        _resetSubmitForm();
+      }
       isUploading = false;
       return ReturnState.fromJson(value.data);
     });
+  }
+
+  //重置提交表单,清除缓存
+  void _resetSubmitForm() {
+    _tags.clear();
+    _filePickerResult = null;
+    document = '';
+    imageFiles.clear();
   }
 
   //清空好像不算重新赋值，因为操作的数组一直是同一个,只是把它清空了而已
@@ -95,6 +111,7 @@ class EditModel extends ChangeNotifier {
     }
   }
 
+  //这里使用的是中序遍历，但是好像没有关系，因为每一行好像只能有一个元素(图片，文本)
   void _dfs(Map<String, dynamic> oneRowData) {
     oneRowData.forEach((key, value) {
       if (value is Map<String, dynamic>) {
@@ -152,7 +169,6 @@ class EditModel extends ChangeNotifier {
       debugPrint('editAuthentication');
       debugPrint(error.toString());
     });
-    notifyListeners();
   }
 
   void _parseData(dynamic data) {

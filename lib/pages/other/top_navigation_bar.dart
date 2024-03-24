@@ -70,8 +70,8 @@ class _TopNavigationBarState extends State<TopNavigationBar> {
                                   : Colors.grey[120]),
                         ),
                         onPressed: () {
-                          if(i == 2) {
-                            context.goNamed('edit');
+                          if (i == 2) {
+                            context.goNamed('seek-help');
                           }
                           setState(() {
                             _route = i ~/ 2 + 1;

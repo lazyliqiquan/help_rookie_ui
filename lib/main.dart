@@ -2,6 +2,7 @@ import 'package:help_rookie_ui/config/theme.dart';
 import 'package:help_rookie_ui/data/config/local_store.dart';
 import 'package:help_rookie_ui/data/config/network.dart';
 import 'package:help_rookie_ui/data/edit/edit.dart';
+import 'package:help_rookie_ui/data/seek_help/seek_help_list.dart';
 import 'package:help_rookie_ui/data/user/login.dart';
 import 'package:help_rookie_ui/pages/go_router.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -18,14 +19,12 @@ void main() {
     options.headers['Authorization'] = WebLocalStore.getHash('token');
     return handler.next(options);
   }));
-
-  // WebConfigModel webConfigModel = await WebConfigModel.getWebConfig();
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => AppTheme()),
       ChangeNotifierProvider(create: (_) => LoginModel()),
       ChangeNotifierProvider(create: (_) => EditModel()),
-      // ChangeNotifierProvider.value(value: webConfigModel),
+      ChangeNotifierProvider(create: (_) => SeekHelpListModel()),
     ],
     child: const MyApp(),
   ));

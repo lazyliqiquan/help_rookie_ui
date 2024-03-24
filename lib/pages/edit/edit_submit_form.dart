@@ -203,7 +203,9 @@ class _EditSubmitFormState extends State<EditSubmitForm> with MacroComponent {
                           if (editModel.isSeekHelp && !editModel.isRebuild) {
                             //  新建求助帖子
                             returnState = await editModel.addSeekHelp(
-                                _selectNum, widget.document);
+                                _selectNum,
+                                textEditingControllers[0].text,
+                                widget.document);
                           }
                           if (context.mounted) {
                             showInfo(context, returnState);

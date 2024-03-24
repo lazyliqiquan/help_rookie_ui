@@ -42,7 +42,28 @@ class MyRouter {
           GoRoute(
               path: 'seek-help',
               name: 'seek-help',
-              builder: (context, state) => const SeekHelpList()),
+              builder: (context, state) => const SeekHelpList(),
+              routes: [
+                GoRoute(
+                    path: ':seekHelpId',
+                    builder: (context, state) {
+                      return Container();
+                    },
+                    routes: [
+                      GoRoute(
+                          path: 'lend-hand',
+                          builder: (context, state) {
+                            return Container();
+                          },
+                          routes: [
+                            GoRoute(
+                                path: 'lendHandId',
+                                builder: (context, state) {
+                                  return Container();
+                                })
+                          ])
+                    ])
+              ]),
           GoRoute(
               path: 'edit',
               name: 'edit',
