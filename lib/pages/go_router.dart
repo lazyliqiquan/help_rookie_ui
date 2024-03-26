@@ -8,7 +8,7 @@ import 'package:help_rookie_ui/pages/home/home.dart';
 import 'package:help_rookie_ui/pages/login/find_password.dart';
 import 'package:help_rookie_ui/pages/login/login.dart';
 import 'package:help_rookie_ui/pages/login/register.dart';
-import 'package:help_rookie_ui/pages/seek_help/seek_help.dart';
+import 'package:help_rookie_ui/pages/post_ui/seek_help.dart';
 import 'package:provider/provider.dart';
 
 class MyRouter {

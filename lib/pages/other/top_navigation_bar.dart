@@ -12,9 +12,12 @@ class TopNavigationBar extends StatefulWidget {
 }
 
 class _TopNavigationBarState extends State<TopNavigationBar> {
-  static const List<String> _strList = ['home', 'seek help', 'share'];
+  static const List<IconData> _routeIcons = [
+    FluentIcons.home,
+    FluentIcons.hands_free,
+    FluentIcons.share
+  ];
   static const List<IconData> _iconList = [FluentIcons.account_management];
-  int _route = 1; // 0 项目介绍 1 home 2 seek help 3 share
 
   @override
   Widget build(BuildContext context) {
@@ -57,28 +60,23 @@ class _TopNavigationBarState extends State<TopNavigationBar> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                for (int i = 0; i < _strList.length + 2; i++)
+                for (int i = 0; i < _routeIcons.length + 2; i++)
                   if (i % 2 == 0)
-                    HyperlinkButton(
-                        child: Text(
-                          _strList[i ~/ 2],
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color: (i ~/ 2 + 1) == _route
-                                  ? appTheme.color.normal
-                                  : Colors.grey[120]),
+                    IconButton(
+                        icon: Icon(
+                          _routeIcons[i ~/ 2],
+                          size: 20,
+                          color: Colors.grey[130],
                         ),
                         onPressed: () {
-                          if (i == 2) {
+                          if (i == 0) {
+                            context.goNamed('home');
+                          } else if (i == 2) {
                             context.goNamed('seek-help');
                           }
-                          setState(() {
-                            _route = i ~/ 2 + 1;
-                          });
                         })
                   else
-                    const SizedBox(width: 5)
+                    const SizedBox(width: 10)
               ],
             ),
           ),

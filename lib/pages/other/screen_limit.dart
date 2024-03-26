@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:help_rookie_ui/config/screen.dart';
 import 'package:help_rookie_ui/pages/other/icp_record.dart';
@@ -40,9 +42,8 @@ class ScreenLimit extends StatelessWidget {
             child: Column(children: [
               if (showTopNavigationBar) const TopNavigationBar(),
               Container(
-                height: isCustom
-                    ? widgetHeight
-                    : maxHeight + ScreenConfig.verticalWidgetMargin,
+                height: max(widgetHeight,
+                    maxHeight + ScreenConfig.verticalWidgetMargin),
                 width: isCustom ? null : maxWidth,
                 padding: const EdgeInsets.only(
                     left: ScreenConfig.horizontalWidgetMargin,

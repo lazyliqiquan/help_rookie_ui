@@ -2,7 +2,7 @@ import 'package:help_rookie_ui/config/theme.dart';
 import 'package:help_rookie_ui/data/config/local_store.dart';
 import 'package:help_rookie_ui/data/config/network.dart';
 import 'package:help_rookie_ui/data/edit/edit.dart';
-import 'package:help_rookie_ui/data/seek_help/seek_help_list.dart';
+import 'package:help_rookie_ui/data/post_data/list_common_data.dart';
 import 'package:help_rookie_ui/data/user/login.dart';
 import 'package:help_rookie_ui/pages/go_router.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -24,7 +24,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => AppTheme()),
       ChangeNotifierProvider(create: (_) => LoginModel()),
       ChangeNotifierProvider(create: (_) => EditModel()),
-      ChangeNotifierProvider(create: (_) => SeekHelpListModel()),
+      ChangeNotifierProvider(create: (_) => ListCommonSort()),
     ],
     child: const MyApp(),
   ));
@@ -48,7 +48,6 @@ class MyApp extends StatelessWidget {
             glowFactor: is10footScreen(context) ? 2.0 : 0.0,
           )),
       theme: FluentThemeData(
-        iconTheme: IconThemeData(size: 20, color: appTheme.color),
         scrollbarTheme: ScrollbarThemeData(
             backgroundColor: Colors.transparent,
             scrollbarColor: Colors.grey[110],
@@ -61,9 +60,9 @@ class MyApp extends StatelessWidget {
         accentColor: appTheme.color,
         visualDensity: VisualDensity.standard,
         activeColor: Colors.purple,
-        inactiveBackgroundColor: Colors.blue,
+        // inactiveBackgroundColor: Colors.blue,//弹窗的背景颜色
         // inactiveColor: Colors.orangeAccent,//输入文本的时候出现的光标的颜色
-        shadowColor: Colors.green,
+        // shadowColor: Colors.green,
         focusTheme: FocusThemeData(
           glowFactor: is10footScreen(context) ? 2.0 : 0.0,
         ),

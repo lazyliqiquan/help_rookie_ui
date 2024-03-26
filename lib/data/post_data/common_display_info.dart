@@ -13,12 +13,17 @@ import 'package:help_rookie_ui/data/config/network.dart';
 class CommonDisplayInfo extends UserAvatarInfo {
   late final int id; //id
   late final String title; //标题
+  //创建时间,存放在数据库中的日期是字符串，不能排序，但是可以根据主键来排序
   late final String createTime; //创建时间
   late final bool status; //状态
   late final int likeSum; //点赞数
   late final int commentSum; //评论数
   late final int ban; //权限
   late final List<String> tags; //标签
+  //seek help 特有的成员
+  late final int reward; //悬赏
+  late final String language; //语言
+  late final int lendHandSum; //帮助数
 
   CommonDisplayInfo(dynamic data) : super(data['Users']['Avatar']) {
     id = data['ID'];
@@ -30,6 +35,10 @@ class CommonDisplayInfo extends UserAvatarInfo {
     ban = data['Ban'];
     List<String> tempTags = data['Tags'].toString().split('#');
     tags = tempTags.sublist(0, min(3, tempTags.length));
+    //  seek help 特有的成员
+    reward = data['Reward'] ?? 0;
+    language = data['Language'] ?? '';
+    lendHandSum = data['LendHandSum'] ?? 0;
   }
 }
 

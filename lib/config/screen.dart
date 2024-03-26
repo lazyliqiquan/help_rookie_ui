@@ -25,4 +25,7 @@ class ScreenConfig {
 
   //正常图标大小
   static const double normalIconSize = 20;
+
+  //列表的高度
+  static const double listDisplayBlockHeight = 65;
 }
